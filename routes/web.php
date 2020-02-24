@@ -14,3 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test','TestController@test');
+Route::get('/test/encrypt','TestController@encrypt');
+Route::get('/test/decrypt','TestController@decrypt');
+
+
+Route::get('/test/encrypt1','TestController@encrypt1');
+Route::get('/test/encrypt2','TestController@encrypt2');
