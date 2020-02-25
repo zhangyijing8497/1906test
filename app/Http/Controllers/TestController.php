@@ -115,4 +115,50 @@ class TestController extends Controller
         $response = file_get_contents($url);
         var_dump($response);
     }
+
+    /**
+     * 使用非对称加密  发送数据--使用公钥加密
+     */
+    public function rsa1()
+    {
+        $data = "mysql";
+
+        $key = file_get_contents(storage_path('keys/pub_a.key'));
+        openssl_public_encrypt($data,$enc_str,$key);
+        // var_dump($enc_str);echo '</br>';
+
+        // 使用base64_encode 将加密数据编码
+        $base64_str = base64_encode($enc_str);
+
+        $url = "http://api.1906.com/test/rsa1?data=".urlencode($base64_str);
+        $response = file_get_contents($url);
+        // echo '<hr>';
+        echo "收到的响应数据:".$response;echo '</br>';
+        
+        $arr = json_decode($response,true);
+        echo "收到的响应密文:".$arr['data'];echo '</br>';
+
+        $enc_str = base64_decode($arr['data']);
+        $key = file_get_contents(storage_path('keys/priv_b.key'));
+        openssl_private_decrypt($enc_str,$dec_str,$key);
+        echo "解密响应的密文:".$dec_str;
+    }
+
+    /**
+     * 签名
+     */
+    public function rsaSign1()
+    {
+        $data = 'data';
+        $priv_key_id = openssl_pkey_get_private("file://".storage_path('keys/priv_b.key'));
+        openssl_sign($data,$sign,$priv_key_id,OPENSSL_ALGO_SHA256);
+        var_dump($sign);echo '<hr>';
+
+        $b64_sign_str = base64_encode($sign);
+        echo "base64后的签名:".$b64_sign_str;
+
+        $url = "http://api.1906.com/test/verify1?data=".$data.'&sign='.urlencode($b64_sign_str);
+        $response = file_get_contents($url);
+        var_dump($response);
+    }
 }

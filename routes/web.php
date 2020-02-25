@@ -22,3 +22,5 @@ Route::get('/test/decrypt','TestController@decrypt');
 
 Route::get('/test/encrypt1','TestController@encrypt1');
 Route::get('/test/encrypt2','TestController@encrypt2');
+Route::get('/test/rsa1','TestController@rsa1');
+Route::get('/test/rsaSign1','TestController@rsaSign1');
